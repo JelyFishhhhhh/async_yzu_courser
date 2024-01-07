@@ -133,3 +133,4 @@ config.json
 .tmp/
 results/
 accounts.ini
+*.png

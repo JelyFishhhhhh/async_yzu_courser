@@ -219,9 +219,12 @@ if __name__ == '__main__':
 
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     # 304 CSE
-    
+    # 901 Tong 4
+
     coursesList = [
-        '304,CS213B'
+        '304,CS106A',
+        '901,GN220A',
+        '901,LS231A',
     ]
 
     # Time Parameter, sleep n seconds
