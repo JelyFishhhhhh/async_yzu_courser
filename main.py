@@ -214,8 +214,16 @@ if __name__ == '__main__':
     # get account info fomr ini config file
     config = configparser.ConfigParser()
     config.read(configFilename)
-    Account = config['Default']['Account']
-    Password = config['Default']['Password']
+    l_profile= ["", "Tony", "Yu", "Chen"]
+    print("Input User Code:")
+    
+    for idx in range(1, len(l_profile)):
+    
+        print(f"{idx}. {l_profile[idx]}")
+    
+    profile_index= int(input("Input User Code:"))
+    Account = config[l_profile[profile_index]]['Account']
+    Password = config[l_profile[profile_index]]['Password']
 
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     # 304 CSE
@@ -223,8 +231,7 @@ if __name__ == '__main__':
 
     coursesList = [
         '304,CS106A',
-        '901,GN220A',
-        '901,LS231A',
+        
     ]
 
     # Time Parameter, sleep n seconds
