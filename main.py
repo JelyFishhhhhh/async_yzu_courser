@@ -89,7 +89,7 @@ class CourseBot:
 
             result = self.session.post(self.loginUrl, data= self.loginPayLoad)
             if ("parent.location ='SelCurr.aspx?Culture=zh-tw'" in result.text): #成功登入訊息可能一直改，挑個不太能改的
-                await self.log('Login Successful! {}'.format(captcha))
+                await self.log(f'Login Successful! Captcha: {captcha}')
                 break
             elif ("資料庫發生異常" in result.text): # 僅比較成功登入及帳號密碼錯誤的訊息，不確定是否還有其他種情況也符合這個條件
                 await self.log('帳號或密碼錯誤，請重新確認。')
@@ -135,10 +135,10 @@ class CourseBot:
             # parse and save courses information
             courseList = parser.select("#CosListTable input")
             for courseInfo in courseList:
-                tokens = courseInfo.attrs['name'].split(',') # SelCos,CS354,A,1,F,3,Y,Chinese,CS354,A,3 電腦與網路安全概論
+                tokens = courseInfo.attrs['name'].split(',')
 
                 key = tokens[1] + tokens[2]
-                courseName = '{} {}'.format(key, tokens[-1].split(' ')[1])
+                courseName = f"{key} {tokens[-1].split(' ')[1]}"
 
                 self.coursesDB[key] = {
                     'name': courseName,
@@ -146,7 +146,7 @@ class CourseBot:
                 }
                 # self.log(self.coursesDB[key])
 
-            await self.log('Get {} Data Completed!'.format(dept))
+            await self.log('Get {dept} Data Completed!')
 
 
 
@@ -159,7 +159,7 @@ class CourseBot:
                 
                 # check if the classID is legal
                 if key not in self.coursesDB:
-                    await self.log('{} is not a legal classID'.format(key))
+                    await self.log('{key} is not a legal classID')
                     coursesList.remove(course)
                     continue
                 
@@ -190,7 +190,7 @@ class CourseBot:
                 # check if successful
                 parser = BeautifulSoup(html.text, 'lxml')
                 alertMsg = parser.select("script")[0].string.split(';')[0]
-                await self.log('{} {}'.format(self.coursesDB[key]['name'], alertMsg[7:-2]))
+                await self.log(f"{self.coursesDB[key]['name']} {alertMsg[7:-2]}")
 
                 if "加選訊息：" in alertMsg or "已選過" in alertMsg:
                     coursesList.remove(course)
@@ -214,16 +214,17 @@ if __name__ == '__main__':
     # get account info fomr ini config file
     config = configparser.ConfigParser()
     config.read(configFilename)
-    l_profile= ["", "Tony", "Yu", "Chen"]
+    
     print("Input User Code:")
     
-    for idx in range(1, len(l_profile)):
+
+    for idx in range(1, len(config)):
     
-        print(f"{idx}. {l_profile[idx]}")
+        print(f"{idx}. {config[idx]}")
     
     profile_index= int(input("Input User Code:"))
-    Account = config[l_profile[profile_index]]['Account']
-    Password = config[l_profile[profile_index]]['Password']
+    Account = config[config[profile_index]]['Account']
+    Password = config[config[profile_index]]['Password']
 
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     # 304 CSE
