@@ -217,16 +217,22 @@ if __name__ == '__main__':
     
     print("Input User Code:")
     
+    l_profile=[""]
+    for element in config:
+        
+        if element== "DEFAULT":
 
-    for idx in range(1, len(config)):
-    
-        print(f"{idx}. {config[idx]}")
+            continue
+        l_profile.append(element)
+        print(f"{len(l_profile)- 1}. {element}")
     
     profile_index= int(input("Input User Code:"))
-    Account = config[config[profile_index]]['Account']
-    Password = config[config[profile_index]]['Password']
-
+    Account = config[l_profile[profile_index]]['Account']
+    Password = config[l_profile[profile_index]]['Password']
+    print(l_profile[profile_index])
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
+    
+    # Common
     # 304 CSE
     # 901 Tong 4
 
