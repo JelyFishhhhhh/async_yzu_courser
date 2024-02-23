@@ -1,5 +1,3 @@
-# YZU Courser 4 MONO-user
-
 import os
 import cv2
 import time
@@ -8,13 +6,19 @@ import numpy as np
 import configparser
 from bs4 import BeautifulSoup
 from keras.models import load_model
-from asyncio import run
+from asyncio import run, gather
+from string import ascii_letters, digits
+from random import choice
+
+TASKID_LEN= 10
+DELAY= 1
 
 class CourseBot:
 
-    def __init__(self, account, password):
+    def __init__(self, account, password, taskID):
         self.account = account
         self.password = password
+        self.taskID= ''.join(choice(ascii_letters + digits) for x in range(TASKID_LEN))
         self.coursesDB = {}
 
         # for keras
@@ -189,14 +193,18 @@ class CourseBot:
                 # select course
                 html = self.session.get(self.courseSelectUrl + self.coursesDB[key]['mUrl'] + ' ,B,')
 
-                # check if successful
+                # check successful?
                 parser = BeautifulSoup(html.text, 'lxml')
                 alertMsg = parser.select("script")[0].string.split(';')[0]
                 await self.log(f"{self.coursesDB[key]['name']} {alertMsg[7:-2]}")
 
                 if "加選訊息：" in alertMsg or "已選過" in alertMsg:
+                    
+                    print(f"{course} Success !")
                     coursesList.remove(course)
+
                 elif "please log on again!" in alertMsg:
+                    
                     await self.login()
 
                 time.sleep(delay)
@@ -204,6 +212,17 @@ class CourseBot:
     async def log(self, msg):
 
         print(time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime()), msg)
+
+    async def task(self, num, info):
+        l_task= []
+        for i in range(1, num+ 1):
+
+            l_task.append(self.login())
+            l_task.append(self.getCourseDB(info[i][depts]))
+            l_task.append(self.selectCourses(info[i][coursesList], DELAY))
+
+        await gather(*l_task)
+
 
 def user_selector(l_profile, profile_index):
 
@@ -214,10 +233,12 @@ def user_selector(l_profile, profile_index):
         if element== "DEFAULT":
 
             continue
+
         l_profile.append(element)
         print(f"{len(l_profile)- 1}. {element}")
     
     profile_index= int(input("Input User Code:"))
+    return profile_index
 
 if __name__ == '__main__':
 
@@ -230,12 +251,12 @@ if __name__ == '__main__':
     # get account info fomr ini config file
     config = configparser.ConfigParser()
     config.read(configFilename)
-    # l_profile=[""]
-    # profile_index= None
-    # user_selector(l_profile= l_profile, profile_index= profile_index)
-    Account = config['JK']['Account']
-    Password = config['JK']['Password']
-    # print(l_profile[profile_index])
+    l_profile=[""]
+    profile_index= None
+    profile_index= user_selector(l_profile= l_profile, profile_index= profile_index)
+    Account = config[l_profile[profile_index]]['Account']
+    Password = config[l_profile[profile_index]]['Password']
+
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     
     # Common
@@ -243,16 +264,14 @@ if __name__ == '__main__':
     # 901 Tong 4
 
     coursesList = [
-        '304,CS106A',
+        '301,CS106A',
         
     ]
-
-    # Time Parameter, sleep n seconds
-    delay = 1
     
     depts = set([i.split(',')[0] for i in coursesList])
-    
-    myBot = CourseBot(Account, Password)
+    taskID= ""
+    myBot = CourseBot(Account, Password, taskID)
+    print(taskID)
     run(myBot.login())
     run(myBot.getCourseDB(depts))
-    run(myBot.selectCourses(coursesList, delay))
+    run(myBot.selectCourses(coursesList, DELAY))

@@ -55,7 +55,7 @@ class CourseBot:
 
     async def captchaOCR(self):
 
-        captchaImg = cv2.imread('captcha.png') / 255.0
+        captchaImg = cv2.imread('captcha2.png') / 255.0
         return await self.predict(captchaImg)
 
     # login into system and get session
@@ -67,7 +67,7 @@ class CourseBot:
 
             # download and recognize captch
             with self.session.get(self.captchaUrl, stream= True) as captchaHtml:
-                with open('captcha.png', 'wb') as img:
+                with open('captcha2.png', 'wb') as img:
                     img.write(captchaHtml.content)
             captcha = await self.captchaOCR()
 
@@ -233,8 +233,8 @@ if __name__ == '__main__':
     # l_profile=[""]
     # profile_index= None
     # user_selector(l_profile= l_profile, profile_index= profile_index)
-    Account = config['JK']['Account']
-    Password = config['JK']['Password']
+    Account = config['Yitsen']['Account']
+    Password = config['Yitsen']['Password']
     # print(l_profile[profile_index])
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     
@@ -243,7 +243,7 @@ if __name__ == '__main__':
     # 901 Tong 4
 
     coursesList = [
-        '304,CS106A',
+        '304,CS107B',
         
     ]
 
