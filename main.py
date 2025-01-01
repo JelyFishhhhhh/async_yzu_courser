@@ -7,7 +7,7 @@ import requests
 import numpy as np
 import configparser
 from bs4 import BeautifulSoup
-from keras.models import load_model
+from tensorflow.keras.models import load_model #type:ignore
 from asyncio import run
 
 class CourseBot:
@@ -18,7 +18,7 @@ class CourseBot:
         self.coursesDB = {}
 
         # for keras
-        self.model = load_model('model.h5')
+        self.model = load_model('model.h5', compile=False)
         self.n_classes = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
         # for requests
@@ -233,8 +233,8 @@ if __name__ == '__main__':
     # l_profile=[""]
     # profile_index= None
     # user_selector(l_profile= l_profile, profile_index= profile_index)
-    Account = config['JK']['Account']
-    Password = config['JK']['Password']
+    Account = config['Tony']['Account']
+    Password = config['Tony']['Password']
     # print(l_profile[profile_index])
     # the courses you want to select, format: '`deptId`,`courseId``classId`'
     
@@ -243,8 +243,7 @@ if __name__ == '__main__':
     # 901 Tong 4
 
     coursesList = [
-        '304,CS106A',
-        
+        '910,AI002',
     ]
 
     # Time Parameter, sleep n seconds

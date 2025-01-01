@@ -134,3 +134,4 @@ config.json
 results/
 accounts.ini
 *.png
+merge.py
