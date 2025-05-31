@@ -21,8 +21,8 @@ if __name__ == '__main__':
     configFilename = './user.json'
     if not os.path.isfile(configFilename):
         with open(configFilename, 'a') as f:
-            f.writelines(["[Default]\n", "Account= your account\n", "Password= your password"])
-            print('input your username and password in accounts.ini')
+            
+            print('input your Username, Password, CourseList in user.json')
             exit()
     
     config= Json.load(configFilename)
