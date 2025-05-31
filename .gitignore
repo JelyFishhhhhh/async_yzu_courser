@@ -135,3 +135,5 @@ results/
 accounts.ini
 *.png
 merge.py
+user.json
+test.json
